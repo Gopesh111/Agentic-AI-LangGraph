@@ -15,6 +15,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 05 | Persistent Checkpointing (Memory) | `topic_05_memory.py` | Done |
 | 06 | Human-in-the-Loop (HITL) Architecture | `topic_06_human_in_loop.py` | Done |
 | 07 | Parallel Execution (Fan-out/Fan-in) | topic_07_parallel_execution.py | Done |
+| 08 | Sub-Graphs & Multi-Agent Systems | topic_08_multi_agent.py | Done |
 
 ---
 
@@ -55,5 +56,9 @@ Sequential tool calling is the biggest bottleneck in agentic workflows. If an ag
 
 I implemented a Parallel Execution (Fan-out / Fan-in) architecture in LangGraph. The system now triggers multiple worker nodes simultaneously across different threads. Once all parallel processes resolve, an aggregator node merges the shared State and synthesizes the final output. This architectural shift dropped my execution time by almost 60%, moving the system from a sluggish script to a production-grade backend.
 
+### Topic 08: Multi-Agent Systems - The Supervisor Pattern
+Putting all logic into a single "God Agent" leads to bloated context windows and high hallucination rates. It is similar to writing an entire backend in one file. 
+
+I restructured my architecture to use a Multi-Agent Supervisor pattern. I built a central Supervisor node that delegates specific sub-tasks to specialized micro-agents (e.g., a Researcher and a Coder). The sub-agents execute their narrow tasks and report back to the Supervisor, which then decides the next route. Applying the "Separation of Concerns" principle to AI agents made the system modular and significantly more accurate.
 ---
 
