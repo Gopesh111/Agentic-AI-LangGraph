@@ -16,6 +16,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 06 | Human-in-the-Loop (HITL) Architecture | `topic_06_human_in_loop.py` | Done |
 | 07 | Parallel Execution (Fan-out/Fan-in) | topic_07_parallel_execution.py | Done |
 | 08 | Sub-Graphs & Multi-Agent Systems | topic_08_multi_agent.py | Done |
+| 09 | Time Travel (State Rewind) | topic_09_time_travel.py | Done |
 
 ---
 
@@ -60,5 +61,10 @@ I implemented a Parallel Execution (Fan-out / Fan-in) architecture in LangGraph.
 Putting all logic into a single "God Agent" leads to bloated context windows and high hallucination rates. It is similar to writing an entire backend in one file. 
 
 I restructured my architecture to use a Multi-Agent Supervisor pattern. I built a central Supervisor node that delegates specific sub-tasks to specialized micro-agents (e.g., a Researcher and a Coder). The sub-agents execute their narrow tasks and report back to the Supervisor, which then decides the next route. Applying the "Separation of Concerns" principle to AI agents made the system modular and significantly more accurate.
+
+### Topic 09: Time Travel - State Rewind & Modification
+When a standard AI agent makes a mistake halfway through a task, you usually have to restart the entire prompt, wasting compute and API tokens. 
+
+Because LangGraph uses checkpointing, I implemented a "Time Travel" feature. If the agent makes a hallucination at step 2, I can pause the graph, fetch the exact state from that specific node, manually correct the variables (e.g., fix a typo), and resume execution from step 3. It acts like a "Ctrl+Z" for AI workflows and makes debugging multi-step logic incredibly efficient.
 ---
 
