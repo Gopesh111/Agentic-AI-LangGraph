@@ -66,5 +66,6 @@ I restructured my architecture to use a Multi-Agent Supervisor pattern. I built 
 When a standard AI agent makes a mistake halfway through a task, you usually have to restart the entire prompt, wasting compute and API tokens. 
 
 Because LangGraph uses checkpointing, I implemented a "Time Travel" feature. If the agent makes a hallucination at step 2, I can pause the graph, fetch the exact state from that specific node, manually correct the variables (e.g., fix a typo), and resume execution from step 3. It acts like a "Ctrl+Z" for AI workflows and makes debugging multi-step logic incredibly efficient.
+
 ---
 
