@@ -17,6 +17,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 07 | Parallel Execution (Fan-out/Fan-in) | topic_07_parallel_execution.py | Done |
 | 08 | Sub-Graphs & Multi-Agent Systems | topic_08_multi_agent.py | Done |
 | 09 | Time Travel (State Rewind) | topic_09_time_travel.py | Done |
+| 10 | Self-Reflection & Correction (Critic Loop) | topic_10_self_reflection.py | Done |
 
 ---
 
@@ -66,6 +67,11 @@ I restructured my architecture to use a Multi-Agent Supervisor pattern. I built 
 When a standard AI agent makes a mistake halfway through a task, you usually have to restart the entire prompt, wasting compute and API tokens. 
 
 Because LangGraph uses checkpointing, I implemented a "Time Travel" feature. If the agent makes a hallucination at step 2, I can pause the graph, fetch the exact state from that specific node, manually correct the variables (e.g., fix a typo), and resume execution from step 3. It acts like a "Ctrl+Z" for AI workflows and makes debugging multi-step logic incredibly efficient.
+
+### Topic 10: Self-Reflection & Correction (The Critic Loop)
+Zero-shot AI generation is risky; LLMs frequently hallucinate or write buggy code on the first attempt. To solve this, I moved away from linear execution and built a cyclic graph. 
+
+I implemented a Self-Reflection loop where a "Generator" node creates an initial draft, and a "Critic" node evaluates it. If the Critic finds an error, the graph dynamically routes backward, feeding the error logs back to the Generator to force a rewrite. The loop only terminates when the Critic approves the output or a maximum iteration limit is reached. This drastically improves the reliability of the final output.
 
 ---
 
