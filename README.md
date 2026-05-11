@@ -18,6 +18,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 08 | Sub-Graphs & Multi-Agent Systems | topic_08_multi_agent.py | Done |
 | 09 | Time Travel (State Rewind) | topic_09_time_travel.py | Done |
 | 10 | Self-Reflection & Correction (Critic Loop) | topic_10_self_reflection.py | Done |
+| 11 | Context Management (Memory Summarization) | topic_11_memory_manager.py | Done |
 
 ---
 
@@ -72,6 +73,11 @@ Because LangGraph uses checkpointing, I implemented a "Time Travel" feature. If 
 Zero-shot AI generation is risky; LLMs frequently hallucinate or write buggy code on the first attempt. To solve this, I moved away from linear execution and built a cyclic graph. 
 
 I implemented a Self-Reflection loop where a "Generator" node creates an initial draft, and a "Critic" node evaluates it. If the Critic finds an error, the graph dynamically routes backward, feeding the error logs back to the Generator to force a rewrite. The loop only terminates when the Critic approves the output or a maximum iteration limit is reached. This drastically improves the reliability of the final output.
+
+### Topic 11: Context Management (Memory Summarization)
+Saving chat history (Topic 05) is necessary, but passing the entire raw history into every new LLM prompt quickly leads to token limit crashes. 
+
+To solve this, I added a dynamic Memory Manager. The system uses a conditional entry point to check the `chat_history` length. If it exceeds a threshold, it routes to a `Summarizer` node that compresses older conversations into a dense string. This approach **reduced token consumption by ~80%** in long-running sessions, ensuring the agent remains cost-effective and responsive without "forgetting" the user's intent.
 
 ---
 
