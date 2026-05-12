@@ -19,6 +19,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 09 | Time Travel (State Rewind) | topic_09_time_travel.py | Done |
 | 10 | Self-Reflection & Correction (Critic Loop) | topic_10_self_reflection.py | Done |
 | 11 | Context Management (Memory Summarization) | topic_11_memory_manager.py | Done |
+| 12 | Structured Outputs (Pydantic Enforced JSON) | topic_12_structured_output.py | Done |
 
 ---
 
@@ -78,6 +79,11 @@ I implemented a Self-Reflection loop where a "Generator" node creates an initial
 Saving chat history (Topic 05) is necessary, but passing the entire raw history into every new LLM prompt quickly leads to token limit crashes. 
 
 To solve this, I added a dynamic Memory Manager. The system uses a conditional entry point to check the `chat_history` length. If it exceeds a threshold, it routes to a `Summarizer` node that compresses older conversations into a dense string. This approach **reduced token consumption by ~80%** in long-running sessions, ensuring the agent remains cost-effective and responsive without "forgetting" the user's intent.
+
+### Topic 12: Structured Outputs (Pydantic Enforced JSON)
+LLMs natively output unstructured text. If a backend system expects JSON and the AI includes extra conversational text (e.g., "Here is your JSON:"), the JSON parser crashes. 
+
+To guarantee type safety, I implemented Structured Outputs in LangGraph. By defining a strict Pydantic `BaseModel` and binding it to the LLM node using `.with_structured_output()`, the agent is mathematically forced to adhere to the exact database schema. This eliminates the need for messy string manipulation or prompt engineering to get clean, reliable JSON data.
 
 ---
 
