@@ -20,6 +20,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 10 | Self-Reflection & Correction (Critic Loop) | topic_10_self_reflection.py | Done |
 | 11 | Context Management (Memory Summarization) | topic_11_memory_manager.py | Done |
 | 12 | Structured Outputs (Pydantic Enforced JSON) | topic_12_structured_output.py | Done |
+| 13 | Reliability (Circuit Breaker Pattern) | topic_13_circuit_breaker.py | Done |
 
 ---
 
@@ -84,6 +85,11 @@ To solve this, I added a dynamic Memory Manager. The system uses a conditional e
 LLMs natively output unstructured text. If a backend system expects JSON and the AI includes extra conversational text (e.g., "Here is your JSON:"), the JSON parser crashes. 
 
 To guarantee type safety, I implemented Structured Outputs in LangGraph. By defining a strict Pydantic `BaseModel` and binding it to the LLM node using `.with_structured_output()`, the agent is mathematically forced to adhere to the exact database schema. This eliminates the need for messy string manipulation or prompt engineering to get clean, reliable JSON data.
+
+### Topic 13: Reliability (Circuit Breaker Pattern)
+When an external tool fails, AI agents tend to panic and retry the same step repeatedly. In an automated workflow, this results in an infinite loop that rapidly drains API credits and crashes the system.
+
+To fix this, I implemented a Circuit Breaker pattern directly into the LangGraph state. By adding a `retry_count` tracker and a conditional routing edge, the graph monitors its own failures. If a node fails three consecutive times, the router cuts the connection and forces a graceful exit. This basic architectural addition is crucial for preventing runaway token consumption during local testing and deployment.
 
 ---
 
