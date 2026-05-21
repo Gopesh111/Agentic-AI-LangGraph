@@ -21,6 +21,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 11 | Context Management (Memory Summarization) | topic_11_memory_manager.py | Done |
 | 12 | Structured Outputs (Pydantic Enforced JSON) | topic_12_structured_output.py | Done |
 | 13 | Reliability (Circuit Breaker Pattern) | topic_13_circuit_breaker.py | Done |
+| 14 | Human-in-the-Loop & Self-Healing Execution | topic_14_code_interpreter.py | Done |
 
 ---
 
@@ -90,6 +91,9 @@ To guarantee type safety, I implemented Structured Outputs in LangGraph. By defi
 When an external tool fails, AI agents tend to panic and retry the same step repeatedly. In an automated workflow, this results in an infinite loop that rapidly drains API credits and crashes the system.
 
 To fix this, I implemented a Circuit Breaker pattern directly into the LangGraph state. By adding a `retry_count` tracker and a conditional routing edge, the graph monitors its own failures. If a node fails three consecutive times, the router cuts the connection and forces a graceful exit. This basic architectural addition is crucial for preventing runaway token consumption during local testing and deployment.
+
+### Topic 14: Human-in-the-Loop & Self-Healing Execution (The Code Sandbox)
+To safely allow an LLM to execute local code without risking system security or runaway API billing, I built a multi-node LangGraph architecture combining a human-in-the-loop safety gateway with an automated self-healing loop. The graph first routes the task to an AI Coder node to generate the Python script, then completely pauses state progression to await explicit human approval (`y/n`) in the terminal. Once cleared, the code runs locally inside an isolated subprocess environment protected by a strict 10-second timeout. If the script crashes, the architecture captures the exact traceback error (`stderr`), updates the graph state, and automatically routes it back to the coder node for autonomous patching and rewrite, creating a secure and reliable runtime circuit breaker.
 
 ---
 
