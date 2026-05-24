@@ -22,6 +22,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 12 | Structured Outputs (Pydantic Enforced JSON) | topic_12_structured_output.py | Done |
 | 13 | Reliability (Circuit Breaker Pattern) | topic_13_circuit_breaker.py | Done |
 | 14 | Human-in-the-Loop & Self-Healing Execution | topic_14_code_interpreter.py | Done |
+| 15 | Real-Time State Streaming & UX | topic_15_state_streaming.py | Done |
 
 ---
 
@@ -94,6 +95,11 @@ To fix this, I implemented a Circuit Breaker pattern directly into the LangGraph
 
 ### Topic 14: Human-in-the-Loop & Self-Healing Execution (The Code Sandbox)
 To safely allow an LLM to execute local code without risking system security or runaway API billing, I built a multi-node LangGraph architecture combining a human-in-the-loop safety gateway with an automated self-healing loop. The graph first routes the task to an AI Coder node to generate the Python script, then completely pauses state progression to await explicit human approval (`y/n`) in the terminal. Once cleared, the code runs locally inside an isolated subprocess environment protected by a strict 10-second timeout. If the script crashes, the architecture captures the exact traceback error (`stderr`), updates the graph state, and automatically routes it back to the coder node for autonomous patching and rewrite, creating a secure and reliable runtime circuit breaker.
+
+### Topic 15: Real-Time State Streaming & UX (Solving the Spinner Problem)
+Standard LLMs stream text fast, but agentic workflows (like LangGraph) execute heavy background tasks—writing code, accessing databases, and running self-correction loops. Waiting for a single final API response freezes the frontend, leading to a terrible user experience where users often refresh the page and waste API credits.
+
+To solve this, I moved away from static execution and engineered a real-time state streaming setup. By using LangGraph's streaming capabilities, the graph yields its internal state after every single node execution. This allows the backend to stream live logs (e.g., tool triggers, syntax error patches) directly to the client. I also integrated the human-in-the-loop safety gate from Topic 14, allowing the system to pause mid-flight for user approval. This visibility completely removes the "is it stuck?" anxiety and provides a manual kill switch if the agent goes off-track, bridging the gap between a local script and a production-ready product.
 
 ---
 
