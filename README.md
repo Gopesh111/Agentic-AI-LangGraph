@@ -23,6 +23,14 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 13 | Reliability (Circuit Breaker Pattern) | topic_13_circuit_breaker.py | Done |
 | 14 | Human-in-the-Loop & Self-Healing Execution | topic_14_code_interpreter.py | Done |
 | 15 | Real-Time State Streaming & UX | topic_15_state_streaming.py | Done |
+| 16 | Agentic RAG (Dynamic Retrieval Routing) | topic_16_agentic_rag.py | Done |
+
+---
+
+### Topic 16: Agentic RAG (Dynamic Retrieval Routing)
+Standard RAG pipelines treat every user query like a document search problem. If you ask a standard RAG system for specific database metrics or live internet data, it will blindly search its text vectors, find nothing useful, and likely hallucinate an answer.
+
+To fix this, I engineered an Agentic RAG workflow with a dedicated "Router Node". Instead of immediately retrieving data, the graph first routes the user's prompt to an LLM bound with strict Pydantic structured outputs. This router acts as a traffic cop, classifying the intent and dynamically directing the flow to either a Vector Database (for unstructured docs), a SQL tool (for structured numbers), or a Web Search API (for real-time info). Giving the AI the ability to choose its tools drastically reduces hallucinations and makes the system reliable across varied domains.
 
 ---
 
@@ -100,6 +108,11 @@ To safely allow an LLM to execute local code without risking system security or 
 Standard LLMs stream text fast, but agentic workflows (like LangGraph) execute heavy background tasks—writing code, accessing databases, and running self-correction loops. Waiting for a single final API response freezes the frontend, leading to a terrible user experience where users often refresh the page and waste API credits.
 
 To solve this, I moved away from static execution and engineered a real-time state streaming setup. By using LangGraph's streaming capabilities, the graph yields its internal state after every single node execution. This allows the backend to stream live logs (e.g., tool triggers, syntax error patches) directly to the client. I also integrated the human-in-the-loop safety gate from Topic 14, allowing the system to pause mid-flight for user approval. This visibility completely removes the "is it stuck?" anxiety and provides a manual kill switch if the agent goes off-track, bridging the gap between a local script and a production-ready product.
+
+### Topic 16: Agentic RAG (Dynamic Retrieval Routing)
+Standard RAG pipelines treat every user query like a document search problem. If you ask a standard RAG system for specific database metrics or live internet data, it will blindly search its text vectors, find nothing useful, and likely hallucinate an answer.
+
+To fix this, I engineered an Agentic RAG workflow with a dedicated "Router Node". Instead of immediately retrieving data, the graph first routes the user's prompt to an LLM bound with strict Pydantic structured outputs. This router acts as a traffic cop, classifying the intent and dynamically directing the flow to either a Vector Database (for unstructured docs), a SQL tool (for structured numbers), or a Web Search API (for real-time info). Giving the AI the ability to choose its tools drastically reduces hallucinations and makes the system reliable across varied domains.
 
 ---
 
