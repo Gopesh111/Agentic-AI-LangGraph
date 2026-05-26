@@ -1,6 +1,6 @@
 # Agentic AI and LangGraph Series
 
-A practical, 15-part build series documenting my transition from standard text-generation LLMs to autonomous, stateful agents using LangGraph.
+A practical, 30 part build series documenting my transition from standard text-generation LLMs to autonomous, stateful agents using LangGraph.
 
 The goal isn't just to build wrappers, but to understand the core engine of agency: tools, state machines, cyclic graphs, and reasoning loops.
 
