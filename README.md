@@ -24,6 +24,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 14 | Human-in-the-Loop & Self-Healing Execution | topic_14_code_interpreter.py | Done |
 | 15 | Real-Time State Streaming & UX | topic_15_state_streaming.py | Done |
 | 16 | Agentic RAG (Dynamic Retrieval Routing) | topic_16_agentic_rag.py | Done |
+| 17 | Long-Term Semantic Memory (Vector-Backed State) | topic_17_semantic_memory.py | Done |
 
 ---
 
@@ -113,6 +114,11 @@ To solve this, I moved away from static execution and engineered a real-time sta
 Standard RAG pipelines treat every user query like a document search problem. If you ask a standard RAG system for specific database metrics or live internet data, it will blindly search its text vectors, find nothing useful, and likely hallucinate an answer.
 
 To fix this, I engineered an Agentic RAG workflow with a dedicated "Router Node". Instead of immediately retrieving data, the graph first routes the user's prompt to an LLM bound with strict Pydantic structured outputs. This router acts as a traffic cop, classifying the intent and dynamically directing the flow to either a Vector Database (for unstructured docs), a SQL tool (for structured numbers), or a Web Search API (for real-time info). Giving the AI the ability to choose its tools drastically reduces hallucinations and makes the system reliable across varied domains.
+
+### Topic 17: Long-Term Semantic Memory (Vector-Backed State)
+Standard chat summarization works fine for a few days, but over months of conversation, the context window still overflows. Eventually, the agent drops older messages and completely forgets important user preferences.
+
+To fix this, I engineered a long-term semantic memory layer using a Vector Database. Instead of stuffing a massive chat history into every prompt, I gave the agent a specific "Save to Memory" tool. When a user states a preference, the agent autonomously extracts and saves it to the vector store. On future queries, the system runs a background semantic search and injects only the highly relevant past memories into the context. This keeps API token usage low, maintains fast response times, and allows the agent to retain personalized context indefinitely.
 
 ---
 
