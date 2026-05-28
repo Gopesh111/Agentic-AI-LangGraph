@@ -25,6 +25,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 15 | Real-Time State Streaming & UX | topic_15_state_streaming.py | Done |
 | 16 | Agentic RAG (Dynamic Retrieval Routing) | topic_16_agentic_rag.py | Done |
 | 17 | Long-Term Semantic Memory (Vector-Backed State) | topic_17_semantic_memory.py | Done |
+| 18 | Map-Reduce Agent Pattern (Massive Document Processing) | topic_18_map_reduce.py | Done |
 
 ---
 
@@ -119,6 +120,11 @@ To fix this, I engineered an Agentic RAG workflow with a dedicated "Router Node"
 Standard chat summarization works fine for a few days, but over months of conversation, the context window still overflows. Eventually, the agent drops older messages and completely forgets important user preferences.
 
 To fix this, I engineered a long-term semantic memory layer using a Vector Database. Instead of stuffing a massive chat history into every prompt, I gave the agent a specific "Save to Memory" tool. When a user states a preference, the agent autonomously extracts and saves it to the vector store. On future queries, the system runs a background semantic search and injects only the highly relevant past memories into the context. This keeps API token usage low, maintains fast response times, and allows the agent to retain personalized context indefinitely.
+
+### Topic 18: Map-Reduce Agent Pattern (Massive Document Processing)
+Feeding a 500-page PDF or 10,000 lines of server logs to a single LLM instantly crashes the system due to token limit constraints. Even if it fits, the model suffers from the "lost in the middle" phenomenon, forgetting crucial details.
+
+To solve this, I engineered a "Map-Reduce" architecture using LangGraph's dynamic `Send` API. Instead of reading the whole file at once, the workflow chunks the document. It then dynamically spawns parallel worker nodes (Map phase) to analyze each chunk simultaneously. Once all workers finish, a Master node collects the individual summaries and synthesizes them into a final consolidated report (Reduce phase). This Fan-out/Fan-in approach bypasses token limits, reduces latency through parallel execution, and makes large-scale data processing highly reliable.
 
 ---
 
