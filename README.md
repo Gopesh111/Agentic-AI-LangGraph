@@ -26,6 +26,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 16 | Agentic RAG (Dynamic Retrieval Routing) | topic_16_agentic_rag.py | Done |
 | 17 | Long-Term Semantic Memory (Vector-Backed State) | topic_17_semantic_memory.py | Done |
 | 18 | Map-Reduce Agent Pattern (Massive Document Processing) | topic_18_map_reduce.py | Done |
+| 19 | Safe Text-to-SQL Agents (Read-Only & Schema Parsing) | topic_19_text_to_sql.py | Done |
 
 ---
 
@@ -125,6 +126,11 @@ To fix this, I engineered a long-term semantic memory layer using a Vector Datab
 Feeding a 500-page PDF or 10,000 lines of server logs to a single LLM instantly crashes the system due to token limit constraints. Even if it fits, the model suffers from the "lost in the middle" phenomenon, forgetting crucial details.
 
 To solve this, I engineered a "Map-Reduce" architecture using LangGraph's dynamic `Send` API. Instead of reading the whole file at once, the workflow chunks the document. It then dynamically spawns parallel worker nodes (Map phase) to analyze each chunk simultaneously. Once all workers finish, a Master node collects the individual summaries and synthesizes them into a final consolidated report (Reduce phase). This Fan-out/Fan-in approach bypasses token limits, reduces latency through parallel execution, and makes large-scale data processing highly reliable.
+
+### Topic 19: Safe Text-to-SQL Agents (Read-Only & Schema Parsing)
+Giving an LLM direct execution access to a database is a massive security risk. A hallucinated query could drop tables or leak sensitive data. 
+
+To solve this, I engineered a safety-first Text-to-SQL agent using LangGraph. The workflow is strictly controlled: it first explicitly fetches the database schema (tables, columns) before writing any code. The generated SQL is then executed against a read-only replica, ensuring zero risk of data mutation. If the LLM generates invalid SQL (like querying a non-existent column), the system traps the execution error and routes the traceback back to the SQL Agent in a self-correction loop. This creates a resilient, error-tolerant data extraction pipeline that is safe for production.
 
 ---
 
