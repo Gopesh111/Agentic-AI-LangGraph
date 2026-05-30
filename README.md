@@ -27,6 +27,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 17 | Long-Term Semantic Memory (Vector-Backed State) | topic_17_semantic_memory.py | Done |
 | 18 | Map-Reduce Agent Pattern (Massive Document Processing) | topic_18_map_reduce.py | Done |
 | 19 | Safe Text-to-SQL Agents (Read-Only & Schema Parsing) | topic_19_text_to_sql.py | Done |
+| 20 | Deterministic Fallbacks (Fast-Pathing) | topic_20_fast_pathing.py | Done |
 
 ---
 
@@ -131,6 +132,11 @@ To solve this, I engineered a "Map-Reduce" architecture using LangGraph's dynami
 Giving an LLM direct execution access to a database is a massive security risk. A hallucinated query could drop tables or leak sensitive data. 
 
 To solve this, I engineered a safety-first Text-to-SQL agent using LangGraph. The workflow is strictly controlled: it first explicitly fetches the database schema (tables, columns) before writing any code. The generated SQL is then executed against a read-only replica, ensuring zero risk of data mutation. If the LLM generates invalid SQL (like querying a non-existent column), the system traps the execution error and routes the traceback back to the SQL Agent in a self-correction loop. This creates a resilient, error-tolerant data extraction pipeline that is safe for production.
+
+### Topic 20: Deterministic Fallbacks (Fast-Pathing)
+Invoking a heavy LLM like GPT-4 for every single user interaction is architecturally inefficient and expensive. Standard greetings, menu navigation, or basic FAQs do not require deep reasoning. 
+
+To optimize cost and latency, I implemented a hybrid routing layer using LangGraph. The workflow introduces a deterministic "Fast Path" at the entry point. Using Regex and keyword classification, the router intercepts simple queries (e.g., "hi", "help") and returns static, hardcoded responses instantly (0ms latency, $0 cost). If the query bypasses the rules, it is routed to the heavy LLM node for complex reasoning. This fail-fast mechanism acts as a critical circuit breaker to prevent unnecessary API token burn in production.
 
 ---
 
