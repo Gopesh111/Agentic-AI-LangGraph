@@ -31,12 +31,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 
 ---
 
-### Topic 16: Agentic RAG (Dynamic Retrieval Routing)
-Standard RAG pipelines treat every user query like a document search problem. If you ask a standard RAG system for specific database metrics or live internet data, it will blindly search its text vectors, find nothing useful, and likely hallucinate an answer.
 
-To fix this, I engineered an Agentic RAG workflow with a dedicated "Router Node". Instead of immediately retrieving data, the graph first routes the user's prompt to an LLM bound with strict Pydantic structured outputs. This router acts as a traffic cop, classifying the intent and dynamically directing the flow to either a Vector Database (for unstructured docs), a SQL tool (for structured numbers), or a Web Search API (for real-time info). Giving the AI the ability to choose its tools drastically reduces hallucinations and makes the system reliable across varied domains.
-
----
 
 ## Topics Covered
 
