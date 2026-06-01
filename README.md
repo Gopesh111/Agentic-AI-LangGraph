@@ -28,6 +28,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 18 | Map-Reduce Agent Pattern (Massive Document Processing) | topic_18_map_reduce.py | Done |
 | 19 | Safe Text-to-SQL Agents (Read-Only & Schema Parsing) | topic_19_text_to_sql.py | Done |
 | 20 | Deterministic Fallbacks (Fast-Pathing) | topic_20_fast_pathing.py | Done |
+| 21 | Observability & Telemetry (Tracing Trajectories) | topic_21_telemetry.py | Done |
 
 ---
 
@@ -132,6 +133,11 @@ To solve this, I engineered a safety-first Text-to-SQL agent using LangGraph. Th
 Invoking a heavy LLM like GPT-4 for every single user interaction is architecturally inefficient and expensive. Standard greetings, menu navigation, or basic FAQs do not require deep reasoning. 
 
 To optimize cost and latency, I implemented a hybrid routing layer using LangGraph. The workflow introduces a deterministic "Fast Path" at the entry point. Using Regex and keyword classification, the router intercepts simple queries (e.g., "hi", "help") and returns static, hardcoded responses instantly (0ms latency, $0 cost). If the query bypasses the rules, it is routed to the heavy LLM node for complex reasoning. This fail-fast mechanism acts as a critical circuit breaker to prevent unnecessary API token burn in production.
+
+### Topic 21: Observability & Telemetry (Tracing Trajectories)
+Debugging multi-agent workflows using standard terminal `print` statements is nearly impossible. When an agent executes a 5-step loop, fetches external data, and hallucinates, you need to know exactly which node failed, what the exact prompt was at that microsecond, and how many API tokens were consumed.
+
+To solve this, I integrated LangSmith for full observability and telemetry. By configuring the tracing environment variables and adding metadata tags to the graph invocation, the backend now automatically pushes a detailed execution tree to a dashboard. This allows for visual debugging of agent trajectories, monitoring node latency, and tracking exact token expenditure per run, effectively turning a black-box LLM workflow into a transparent, production-ready system.
 
 ---
 
