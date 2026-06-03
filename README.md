@@ -29,6 +29,8 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 19 | Safe Text-to-SQL Agents (Read-Only & Schema Parsing) | topic_19_text_to_sql.py | Done |
 | 20 | Deterministic Fallbacks (Fast-Pathing) | topic_20_fast_pathing.py | Done |
 | 21 | Observability & Telemetry (Tracing Trajectories) | topic_21_telemetry.py | Done |
+| 21 | Observability & Telemetry (Tracing Trajectories) | topic_21_telemetry.py | Done |
+| 22 | Cost Optimization (Semantic Caching) | topic_22_semantic_caching.py | Done |
 
 ---
 
@@ -138,6 +140,11 @@ To optimize cost and latency, I implemented a hybrid routing layer using LangGra
 Debugging multi-agent workflows using standard terminal `print` statements is nearly impossible. When an agent executes a 5-step loop, fetches external data, and hallucinates, you need to know exactly which node failed, what the exact prompt was at that microsecond, and how many API tokens were consumed.
 
 To solve this, I integrated LangSmith for full observability and telemetry. By configuring the tracing environment variables and adding metadata tags to the graph invocation, the backend now automatically pushes a detailed execution tree to a dashboard. This allows for visual debugging of agent trajectories, monitoring node latency, and tracking exact token expenditure per run, effectively turning a black-box LLM workflow into a transparent, production-ready system.
+
+### Topic 22: Cost Optimization (Semantic Caching)
+Running a multi-agent workflow for every user query is architecturally expensive. In production, a large percentage of traffic consists of frequently asked questions phrased in slightly different ways. 
+
+To prevent runaway API billing, I engineered a Semantic Cache node using LangGraph and a local Vector Store. Positioned at the entry point of the graph, this node embeds the incoming prompt and performs a cosine similarity search against historical queries. If the similarity score exceeds a strict 95% threshold, the graph intercepts the request and instantly returns the cached state, bypassing the LLM completely. This architecture drastically reduces token consumption and drops latency from seconds to milliseconds.
 
 ---
 
