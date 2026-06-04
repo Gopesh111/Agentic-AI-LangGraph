@@ -31,6 +31,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 21 | Observability & Telemetry (Tracing Trajectories) | topic_21_telemetry.py | Done |
 | 21 | Observability & Telemetry (Tracing Trajectories) | topic_21_telemetry.py | Done |
 | 22 | Cost Optimization (Semantic Caching) | topic_22_semantic_caching.py | Done |
+| 23 | Security & Guardrails (Preventing Prompt Injection) | topic_23_guardrails.py | Done |
 
 ---
 
@@ -145,6 +146,11 @@ To solve this, I integrated LangSmith for full observability and telemetry. By c
 Running a multi-agent workflow for every user query is architecturally expensive. In production, a large percentage of traffic consists of frequently asked questions phrased in slightly different ways. 
 
 To prevent runaway API billing, I engineered a Semantic Cache node using LangGraph and a local Vector Store. Positioned at the entry point of the graph, this node embeds the incoming prompt and performs a cosine similarity search against historical queries. If the similarity score exceeds a strict 95% threshold, the graph intercepts the request and instantly returns the cached state, bypassing the LLM completely. This architecture drastically reduces token consumption and drops latency from seconds to milliseconds.
+
+### Topic 23: Security & Guardrails (Preventing Prompt Injection)
+Standard LLMs are highly susceptible to prompt injection and jailbreak attacks (e.g., "Ignore all previous instructions..."). Relying purely on system prompts to protect internal logic or external databases is not a viable security strategy.
+
+To secure the system, I engineered an Input Guardrail node acting as a firewall at the entry point of the LangGraph workflow. Before the primary reasoning agent processes the input, a lightweight classifier evaluates the prompt for malicious intent, role-play bypasses, or system extraction attempts. If an attack is detected, the graph's conditional edges trip a circuit breaker, immediately halting execution and dropping the request. This isolation ensures the core agent and connected tools are never exposed to hostile payloads.
 
 ---
 
