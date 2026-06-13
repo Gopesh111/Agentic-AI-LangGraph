@@ -32,6 +32,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 21 | Observability & Telemetry (Tracing Trajectories) | topic_21_telemetry.py | Done |
 | 22 | Cost Optimization (Semantic Caching) | topic_22_semantic_caching.py | Done |
 | 23 | Security & Guardrails (Preventing Prompt Injection) | topic_23_guardrails.py | Done |
+| 24 | Event-Driven Agents (Webhook Triggers) | topic_24_webhooks.py | Done |
 
 ---
 
@@ -151,6 +152,16 @@ To prevent runaway API billing, I engineered a Semantic Cache node using LangGra
 Standard LLMs are highly susceptible to prompt injection and jailbreak attacks (e.g., "Ignore all previous instructions..."). Relying purely on system prompts to protect internal logic or external databases is not a viable security strategy.
 
 To secure the system, I engineered an Input Guardrail node acting as a firewall at the entry point of the LangGraph workflow. Before the primary reasoning agent processes the input, a lightweight classifier evaluates the prompt for malicious intent, role-play bypasses, or system extraction attempts. If an attack is detected, the graph's conditional edges trip a circuit breaker, immediately halting execution and dropping the request. This isolation ensures the core agent and connected tools are never exposed to hostile payloads.
+
+### Topic 24: Event-Driven Agents (Webhook Triggers)
+
+Chat-based interfaces are useful, but they limit the potential of automated workflows. If an AI agent requires a user to manually copy and paste GitHub issues, Jira tickets, or log files into a chat window, the process is still dependent on human intervention.
+
+To address this, I decoupled the LangGraph workflow from the conversational interface and exposed its entry point through a FastAPI webhook. This allows the workflow to be triggered directly by external events instead of waiting for user prompts.
+
+When an event occurs (e.g., a GitHub issue creation or Jira ticket update), the webhook receives the payload, validates it, and starts the LangGraph workflow. The agent then processes the event, generates an analysis or draft response, and routes the result to the next step. For higher-risk actions, an optional human review stage can be introduced before execution.
+
+This architecture transforms the agent from a standalone chat application into an event-driven backend workflow capable of responding automatically to real-world system events.
 
 ---
 
