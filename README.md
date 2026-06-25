@@ -33,6 +33,7 @@ The goal isn't just to build wrappers, but to understand the core engine of agen
 | 22 | Cost Optimization (Semantic Caching) | topic_22_semantic_caching.py | Done |
 | 23 | Security & Guardrails (Preventing Prompt Injection) | topic_23_guardrails.py | Done |
 | 24 | Event-Driven Agents (Webhook Triggers) | topic_24_webhooks.py | Done |
+| 25 | Multi-Tenant Architecture (Scaling Threads) | topic_25_multi_tenant.py | Done |
 
 ---
 
@@ -162,6 +163,13 @@ To address this, I decoupled the LangGraph workflow from the conversational inte
 When an event occurs (e.g., a GitHub issue creation or Jira ticket update), the webhook receives the payload, validates it, and starts the LangGraph workflow. The agent then processes the event, generates an analysis or draft response, and routes the result to the next step. For higher-risk actions, an optional human review stage can be introduced before execution.
 
 This architecture transforms the agent from a standalone chat application into an event-driven backend workflow capable of responding automatically to real-world system events.
+
+### Topic 25: Multi-Tenant Architecture (Scaling Threads)
+A single-agent workflow may work well during local development, but production systems must handle multiple user sessions concurrently. Without proper state isolation, shared conversation state can lead to context leakage across requests.
+
+To address this, I configured LangGraph's checkpointer to isolate state using a unique thread_id for each session. Every incoming API request or webhook is assigned its own session identifier, allowing the workflow to load only the checkpoint associated with that thread. After execution, the updated state is persisted back to the same isolated session.
+
+This session-based architecture prevents unintended state sharing between users and provides a reliable foundation for handling concurrent agent workflows in production.
 
 ---
 
